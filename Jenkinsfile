@@ -30,10 +30,9 @@ pipeline {
 
         stage('Lint') {
             steps {
-                // Perform lint checks on Python code
                 sh '''
                 source ${VENV}/bin/activate
-                pylint model/*.py
+                pylint model/
                 '''
             }
         }
