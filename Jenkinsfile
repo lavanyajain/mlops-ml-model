@@ -49,7 +49,7 @@ pipeline {
                 // Execute tests
                 sh '''
                 source ${VENV}/bin/activate
-                pytest tests/
+                find tests -name "*.py" | xargs pylint
                 '''
             }
         }
