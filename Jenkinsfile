@@ -56,9 +56,13 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                // Simulate deployment steps
+                echo 'Deploying the model...'
                 sh '''
-                source ${VENV}/bin/activate
+                hash -r
+                if [ ! -d "model" ]; then
+                    echo "Model directory does not exist, aborting deployment."
+                    exit 1
+                fi
                 mkdir -p deployment
                 cp -r model deployment/model
                 '''
