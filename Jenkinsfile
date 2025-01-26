@@ -60,15 +60,16 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                echo 'Running tests...'
-                sh '''
-                source ${VENV}/bin/activate
-                pytest --import-mode=append workflow/tests/
-                '''
-            }
-        }
+       stage('Test') {
+           steps {
+               echo 'Running tests...'
+               sh '''
+               source ${VENV}/bin/activate
+               export PYTHONPATH="${WORKSPACE}:${PYTHONPATH}"  # Add the root directory to PYTHONPATH
+               pytest -vv workflow/tests/
+               '''
+           }
+       }
 
 
 

@@ -1,6 +1,6 @@
 import numpy as np
 # Assuming the directory structure has workflow as a root package directory
-from workflow.model.model import train_model, predict
+from model.model import train_model, predict
 
 def test_model_predictions():
     model = train_model()
