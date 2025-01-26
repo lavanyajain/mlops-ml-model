@@ -2,20 +2,31 @@ pipeline {
     agent any
 
     environment {
-        PYTHON = "python3" // Adjust this to python if using Python 2.x
+        PYTHON = "python3"
         VENV = "venv"
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                    // Clone the GitHub repository
-                    git branch: 'feature/add-model', url: 'https://github.com/lavanyajain/mlops-ml-model.git'
+                echo 'Cloning the repository...'
+                git branch: 'feature/add-model', url: 'https://github.com/lavanyajain/mlops-ml-model.git'
             }
         }
+
+        stage('Check Environment') {
+            steps {
+                sh '''
+                echo "Checking the working directory and its contents..."
+                pwd
+                ls -la
+                '''
+            }
+        }
+
         stage('Setup Environment') {
             steps {
-                // Setup Python virtual environment
+                echo 'Setting up Python environment...'
                 sh '''
                 ${PYTHON} -m pip install --upgrade pip
                 ${PYTHON} -m pip install virtualenv
@@ -26,7 +37,7 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                // Install necessary Python packages
+                echo 'Installing dependencies...'
                 sh '''
                 source ${VENV}/bin/activate
                 pip install numpy scikit-learn pytest pylint
@@ -34,9 +45,19 @@ pipeline {
             }
         }
 
+        stage('Prepare Directories') {
+            steps {
+                echo 'Ensuring all directories exist...'
+                sh '''
+                mkdir -p model
+                mkdir -p tests
+                '''
+            }
+        }
+
         stage('Lint') {
             steps {
-                // Lint all Python files in the model directory
+                echo 'Linting Python files in the model directory...'
                 sh '''
                 source ${VENV}/bin/activate
                 find model -name "*.py" | xargs pylint
@@ -46,10 +67,10 @@ pipeline {
 
         stage('Test') {
             steps {
-                // Execute tests
+                echo 'Running tests...'
                 sh '''
                 source ${VENV}/bin/activate
-                find tests -name "*.py" | xargs pylint
+                pytest tests/
                 '''
             }
         }
@@ -58,13 +79,14 @@ pipeline {
             steps {
                 echo 'Deploying the model...'
                 sh '''
-                hash -r
-                if [ ! -d "model" ]; then
+                source ${VENV}/bin/activate
+                if [ -d "model" ]; then
+                    mkdir -p deployment
+                    cp -r model deployment/model
+                else
                     echo "Model directory does not exist, aborting deployment."
                     exit 1
                 fi
-                mkdir -p deployment
-                cp -r model deployment/model
                 '''
             }
         }
@@ -73,8 +95,10 @@ pipeline {
     post {
         always {
             echo 'Cleaning up...'
-            sh 'rm -rf ${VENV}'
-            sh 'rm -rf deployment'
+            sh '''
+            rm -rf ${VENV}
+            rm -rf deployment
+            '''
         }
     }
 }
