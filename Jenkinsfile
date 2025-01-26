@@ -7,6 +7,12 @@ pipeline {
     }
 
     stages {
+        stage('Checkout Code') {
+            steps {
+                    // Clone the GitHub repository
+                    git url: 'https://github.com/lavanyajain/mlops-ml-model.git'
+            }
+        }
         stage('Setup Environment') {
             steps {
                 // Setup Python virtual environment
