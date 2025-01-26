@@ -10,7 +10,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                     // Clone the GitHub repository
-                    git url: 'https://github.com/lavanyajain/mlops-ml-model.git'
+                    git branch: 'feature/add-model', url: 'https://github.com/lavanyajain/mlops-ml-model.git'
             }
         }
         stage('Setup Environment') {
