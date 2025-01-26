@@ -10,7 +10,7 @@ pipeline {
         stage('Preparation') {
             steps {
                 // Get some code from a GitHub repository
-                git 'https://github.com/yourusername/yourrepo.git'
+                git -b 'feature/add-model''https://github.com/lavanyajain/mlops-ml-model.git'
             }
         }
 
