@@ -9,7 +9,7 @@ import mlflow.sklearn
 mlflow.set_tracking_uri('http://localhost:5000')
 
 # Load data
-data = pd.read_csv('data.csv')
+data = pd.read_csv('data/data.csv')
 X = data.drop('house_price', axis=1)
 y = data['house_price']
 

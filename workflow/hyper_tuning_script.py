@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import mean_squared_error  # Ensure this line is included
 
 # Correct path and delimiter might need to be specified
-data = pd.read_csv('data.csv')
+data = pd.read_csv('data/data.csv')
 print(data.columns)  # check actual column names
 
 # Assume 'house_price' is the target, and it exists as per the print statement

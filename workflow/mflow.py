@@ -8,7 +8,7 @@ import mlflow.sklearn
 # Ensure the MLflow tracking URI is set
 mlflow.set_tracking_uri('http://localhost:5000')
 
-data = pd.read_csv('data.csv')
+data = pd.read_csv('data/data.csv')
 X = data.drop('house_price', axis=1)
 y = data['house_price']
 
