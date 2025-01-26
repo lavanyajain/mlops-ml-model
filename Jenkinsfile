@@ -35,26 +35,16 @@ pipeline {
             }
         }
 
-        stage('Ensure Directories Exist') {
-            steps {
-                echo 'Ensuring that all necessary directories exist...'
-                sh '''
-                mkdir -p model
-                mkdir -p tests
-                '''
-            }
-        }
-
         stage('Check Tests Directory') {
             steps {
                 echo 'Verifying the existence of test files...'
                 sh '''
-                if [ ! -d "tests" ] || [ -z "$(ls -A tests)" ]; then
+                if [ ! -d "workflow/tests" ] || [ -z "$(ls -A workflow/tests)" ]; then
                     echo "No tests directory or no test files found. Test stage skipped."
                     exit 1
                 else
                     echo "Test files found."
-                    find tests -name "test_*.py" -or -name "*_test.py"
+                    find workflow/tests -name "test_*.py" -or -name "*_test.py"
                 fi
                 '''
             }
@@ -65,7 +55,7 @@ pipeline {
                 echo 'Linting Python files...'
                 sh '''
                 source ${VENV}/bin/activate
-                find model -name "*.py" | xargs pylint
+                find workflow/model -name "*.py" | xargs pylint
                 '''
             }
         }
@@ -75,7 +65,7 @@ pipeline {
                 echo 'Running tests...'
                 sh '''
                 source ${VENV}/bin/activate
-                pytest tests/
+                pytest workflow/tests/
                 '''
             }
         }
@@ -85,9 +75,9 @@ pipeline {
                 echo 'Deploying the model...'
                 sh '''
                 source ${VENV}/bin/activate
-                if [ -d "model" ]; then
+                if [ -d "workflow/model" ]; then
                     mkdir -p deployment
-                    cp -r model deployment/model
+                    cp -r workflow/model deployment/model
                 else
                     echo "Model directory does not exist, aborting deployment."
                     exit 1
