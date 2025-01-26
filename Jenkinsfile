@@ -65,10 +65,11 @@ pipeline {
                 echo 'Running tests...'
                 sh '''
                 source ${VENV}/bin/activate
-                pytest -vv workflow/tests/
+                pytest --import-mode=append workflow/tests/
                 '''
             }
         }
+
 
 
         stage('Deploy') {
