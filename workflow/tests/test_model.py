@@ -1,8 +1,10 @@
 # Tests for our simple machine learning model
 
-from model.model import train_model, predict
-import numpy as np
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'model')))
 
+from model import train_model, predict
 def test_model_predictions():
     model = train_model()
     predictions = predict(model, np.array([[3, 5]]))
