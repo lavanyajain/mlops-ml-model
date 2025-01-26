@@ -36,9 +36,10 @@ pipeline {
 
         stage('Lint') {
             steps {
+                // Lint all Python files in the model directory
                 sh '''
                 source ${VENV}/bin/activate
-                pylint model/
+                find model -name "*.py" | xargs pylint
                 '''
             }
         }
