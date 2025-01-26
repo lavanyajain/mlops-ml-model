@@ -14,16 +14,6 @@ pipeline {
             }
         }
 
-        stage('Check Environment') {
-            steps {
-                sh '''
-                echo "Checking the working directory and its contents..."
-                pwd
-                ls -la
-                '''
-            }
-        }
-
         stage('Setup Environment') {
             steps {
                 echo 'Setting up Python environment...'
@@ -37,7 +27,7 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                echo 'Installing dependencies...'
+                echo 'Installing project dependencies...'
                 sh '''
                 source ${VENV}/bin/activate
                 pip install numpy scikit-learn pytest pylint
@@ -45,9 +35,9 @@ pipeline {
             }
         }
 
-        stage('Prepare Directories') {
+        stage('Ensure Directories Exist') {
             steps {
-                echo 'Ensuring all directories exist...'
+                echo 'Ensuring that all necessary directories exist...'
                 sh '''
                 mkdir -p model
                 mkdir -p tests
@@ -55,9 +45,24 @@ pipeline {
             }
         }
 
+        stage('Check Tests Directory') {
+            steps {
+                echo 'Verifying the existence of test files...'
+                sh '''
+                if [ ! -d "tests" ] || [ -z "$(ls -A tests)" ]; then
+                    echo "No tests directory or no test files found. Test stage skipped."
+                    exit 1
+                else
+                    echo "Test files found."
+                    find tests -name "test_*.py" -or -name "*_test.py"
+                fi
+                '''
+            }
+        }
+
         stage('Lint') {
             steps {
-                echo 'Linting Python files in the model directory...'
+                echo 'Linting Python files...'
                 sh '''
                 source ${VENV}/bin/activate
                 find model -name "*.py" | xargs pylint
@@ -98,6 +103,7 @@ pipeline {
             sh '''
             rm -rf ${VENV}
             rm -rf deployment
+            echo "Clean up complete."
             '''
         }
     }
