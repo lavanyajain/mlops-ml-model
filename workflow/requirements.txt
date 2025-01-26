@@ -1,0 +1,6 @@
+flask
+pandas
+numpy
+scikit-learn==1.3.2  # If retraining your model with Docker’s scikit-learn version.
+  # Correct version
+joblib
